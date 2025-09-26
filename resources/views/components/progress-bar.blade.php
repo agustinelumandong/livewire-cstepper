@@ -3,25 +3,25 @@
     <div class="flex items-center justify-between mb-4">
         @for($i = 0; $i < $totalSteps; $i++)
             <div class="flex items-center {{ $i < $totalSteps - 1 ? 'flex-1' : '' }}">
-                <!-- Step Circle -->
-                <div class="step-indicator relative z-10 
-                    {{ $i < $currentIndex ? 'completed' : '' }}
-                    {{ $i === $currentIndex ? 'current' : '' }}
-                    {{ $i > $currentIndex ? 'pending' : '' }}
-                ">
-                    @if($i < $currentIndex)
-                        <x-icon name="check" class="w-5 h-5 text-white" />
-                    @elseif($i === $currentIndex)
-                        <span class="text-sm font-medium text-white">{{ $i + 1 }}</span>
-                    @else
-                        <span class="text-sm font-medium text-gray-500">{{ $i + 1 }}</span>
-                    @endif
-                </div>
+                <!-- Step Circle with WireUI Badge -->
+                @if($i < $currentIndex)
+                    <x-badge green lg rounded class="step-indicator completed">
+                        <x-icon name="check" class="w-4 h-4" />
+                    </x-badge>
+                @elseif($i === $currentIndex)
+                    <x-badge primary lg rounded class="step-indicator current ring-4 ring-primary-200">
+                        {{ $i + 1 }}
+                    </x-badge>
+                @else
+                    <x-badge gray lg rounded class="step-indicator pending">
+                        {{ $i + 1 }}
+                    </x-badge>
+                @endif
 
                 <!-- Connecting Line -->
                 @if($i < $totalSteps - 1)
-                    <div class="flex-1 h-0.5 mx-4 
-                        {{ $i < $currentIndex ? 'bg-primary-500' : 'bg-gray-200' }}
+                    <div class="flex-1 h-0.5 mx-4 transition-colors duration-300
+                        {{ $i < $currentIndex ? 'bg-primary-500' : 'bg-gray-200 dark:bg-gray-700' }}
                     "></div>
                 @endif
             </div>
