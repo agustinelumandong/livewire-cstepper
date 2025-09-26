@@ -12,7 +12,8 @@ class StepperServiceProvider extends PackageServiceProvider
         $package
             ->name('livewire-cstepper')
             ->hasConfigFile()
-            ->hasViews();
+            ->hasViews()
+            ->hasAssets();
     }
 
     public function packageRegistered(): void
@@ -22,6 +23,11 @@ class StepperServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        // Boot any package-specific services here
+        // Publish assets
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../dist' => public_path('vendor/livewire-cstepper'),
+            ], 'livewire-cstepper-assets');
+        }
     }
 }

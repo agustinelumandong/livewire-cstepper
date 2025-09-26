@@ -136,6 +136,7 @@ abstract class CStepper extends Component implements StepperContract
 
         if (!$this->validateAllSteps()) {
             $this->triggerEvent('stepperValidationFailed');
+            $this->showValidationErrorNotification();
             return;
         }
 
@@ -143,7 +144,44 @@ abstract class CStepper extends Component implements StepperContract
             $this->handleSubmission();
         }
 
+        $this->showSuccessNotification();
         $this->triggerEvent('afterSubmitStepper');
+    }
+
+    /**
+     * Show success notification using WireUI
+     */
+    protected function showSuccessNotification(): void
+    {
+        $this->dispatch('wireui:notification', [
+            'title' => 'Success!',
+            'description' => 'Form completed successfully.',
+            'icon' => 'success'
+        ]);
+    }
+
+    /**
+     * Show validation error notification using WireUI
+     */
+    protected function showValidationErrorNotification(): void
+    {
+        $this->dispatch('wireui:notification', [
+            'title' => 'Validation Error',
+            'description' => 'Please correct the errors before proceeding.',
+            'icon' => 'error'
+        ]);
+    }
+
+    /**
+     * Get WireUI configuration
+     */
+    protected function getWireUIConfig(): array
+    {
+        return config('livewire-cstepper.wireui', [
+            'card_variant' => 'default',
+            'button_variant' => 'primary',
+            'progress_color' => 'primary',
+        ]);
     }
 
     protected function validateAllSteps(): bool

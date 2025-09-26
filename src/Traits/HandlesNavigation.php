@@ -33,9 +33,22 @@ trait HandlesNavigation
             // Validate current step before advancing
             if ($this->validateCurrentStep()) {
                 $this->jumpTo($targetIndex);
+                
+                // Dispatch step changed event for JavaScript
+                $this->dispatch('step-changed', [
+                    'step' => $this->currentIndex,
+                    'total' => $this->getTotalSteps()
+                ]);
             } else {
                 // Trigger validation failed event
                 $this->triggerEvent('stepValidationFailed', $this->currentIndex);
+                
+                // Show validation error notification
+                $this->dispatch('wireui:notification', [
+                    'title' => 'Validation Required',
+                    'description' => 'Please complete all required fields before continuing.',
+                    'icon' => 'exclamation-triangle'
+                ]);
             }
         }
     }
