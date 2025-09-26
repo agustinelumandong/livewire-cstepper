@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* WireUI Global CSS */
+@import '../../vendor/wireui/wireui/resources/css/wireui.css';
+
+/* CStepper Custom Styles */
+@layer components {
+    .livewire-cstepper-container {
+        @apply max-w-4xl mx-auto p-6;
+    }
+
+    .stepper-card {
+        @apply bg-white dark:bg-gray-800 shadow-lg rounded-lg;
+    }
+
+    .step-content {
+        @apply min-h-96;
+    }
+
+    .current-step {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    .step-navigation {
+        @apply mt-8 flex justify-between items-center bg-gray-50 dark:bg-gray-700 rounded-lg p-4;
+    }
+
+    .step-navigation-left {
+        @apply flex space-x-4;
+    }
+
+    .step-navigation-right {
+        @apply flex space-x-4;
+    }
+
+    /* Enhanced WireUI Integration */
+    .step-indicator {
+        @apply transition-all duration-200 ease-in-out;
+    }
+
+    .step-indicator.completed {
+        @apply transform scale-110;
+    }
+
+    .step-indicator.current {
+        @apply animate-pulse;
+    }
+
+    /* Loading states */
+    .step-body[wire\:loading\.class="opacity-50"] {
+        @apply transition-opacity duration-200;
+    }
+
+    /* Form field spacing for WireUI components */
+    .step-body .space-y-6 > * + * {
+        @apply mt-6;
+    }
+
+    .step-body .grid.gap-6 > * {
+        @apply space-y-1;
+    }
+}
+
+/* Progress Bar Styles */
+@layer components {
+    .progress-bar-container {
+        @apply w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700;
+    }
+
+    .progress-bar-fill {
+        @apply h-2.5 bg-blue-600 rounded-full transition-all duration-300 ease-out;
+    }
+
+    .step-indicator {
+        @apply flex items-center justify-center w-8 h-8 rounded-full border-2 font-medium text-sm transition-all duration-200;
+    }
+
+    .step-indicator.active {
+        @apply bg-blue-600 border-blue-600 text-white;
+    }
+
+    .step-indicator.completed {
+        @apply bg-green-600 border-green-600 text-white;
+    }
+
+    .step-indicator.inactive {
+        @apply bg-white border-gray-300 text-gray-500;
+    }
+}
