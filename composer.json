@@ -22,6 +22,16 @@
             "agustinelumandong\\LivewireCstepper\\": "src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "agustinelumandong\\LivewireCstepper\\StepperServiceProvider"
+            ],
+            "aliases": {
+                "LivewireCstepper": "agustinelumandong\\LivewireCstepper\\Facades\\LivewireCstepper"
+            }
+        }
+    },
     "homepage": "https://github.com/agustinelumandong/livewire-cstepper",
     "authors": [
         {
@@ -31,6 +41,19 @@
     ],
     "license": "MIT",
     "require-dev": {
-        "orchestra/testbench": "^9.15"
+        "orchestra/testbench": "^9.15",
+        "phpunit/phpunit": "^11.0",
+        "mockery/mockery": "^1.6",
+        "laravel/pint": "^1.18"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "agustinelumandong\\LivewireCstepper\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "format": "vendor/bin/pint"
     }
 }
