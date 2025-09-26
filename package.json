@@ -1,0 +1,14 @@
+{
+    "name": "livewire-cstepper",
+    "version": "1.0.0",
+    "description": "Laravel Livewire CStepper package frontend assets",
+    "scripts": {
+        "build": "tailwindcss -i ./resources/css/app.css -o ./dist/app.css --watch",
+        "production": "tailwindcss -i ./resources/css/app.css -o ./dist/app.css --minify"
+    },
+    "devDependencies": {
+        "@tailwindcss/forms": "^0.5.7",
+        "alpinejs": "^3.14.1",
+        "tailwindcss": "^3.4.1"
+    }
+}
