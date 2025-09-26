@@ -18,7 +18,12 @@ class StepperServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        // Register any package-specific services here
+        // Register artisan commands
+        $this->commands([
+            Commands\MakeCstepperCommand::class,
+            Commands\MakeStepCommand::class,
+            Commands\MakeCstepperPresetCommand::class,
+        ]);
     }
 
     public function packageBooted(): void
