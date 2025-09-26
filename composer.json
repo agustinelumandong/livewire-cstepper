@@ -1,0 +1,36 @@
+{
+    "name": "agustinelumandong/livewire-cstepper",
+    "description": "Laravel Livewire CStepper [Modern Multi-Step Form] component.",
+    "keywords": [
+        "Laravel",
+        "livewire",
+        "multi-steps",
+        "cstepper",
+        "form"
+    ],
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0",
+        "illuminate/contracts": "^11.0",
+        "livewire/livewire": "^3.6",
+        "spatie/laravel-package-tools": "^1.92",
+        "wireui/wireui": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "agustinelumandong\\LivewireCstepper\\": "src/"
+        }
+    },
+    "homepage": "https://github.com/agustinelumandong/livewire-cstepper",
+    "authors": [
+        {
+            "name": "Cshan",
+            "email": "agustinelumandong@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require-dev": {
+        "orchestra/testbench": "^9.15"
+    }
+}
