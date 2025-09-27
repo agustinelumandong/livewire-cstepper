@@ -23,6 +23,7 @@ abstract class CStepper extends Component implements StepperContract
     public bool $persistStepData = true;
     public null|array|Model $model = null;
     protected array $cachedStepComponents = [];
+    protected string $sessionKey;
 
     protected $queryString = [];
 
@@ -34,9 +35,44 @@ abstract class CStepper extends Component implements StepperContract
         $this->clearFormData();
         $this->cachedStepComponents = [];
         
+        // Clear session markers
+        session()->forget($this->sessionKey . '_initialized');
+        session()->forget($this->sessionKey . '_data');
+        
+        // Clear any validation errors
+        $this->resetValidation();
+        
         $this->mount();
 
         $this->triggerEvent('afterResetStepper');
+        
+        // Show reset confirmation
+        $this->dispatch('wireui:notification', [
+            'title' => 'Stepper Reset',
+            'description' => 'The stepper has been reset to the beginning.',
+            'icon' => 'refresh'
+        ]);
+    }
+
+    public function resetWithConfirmation(): void
+    {
+        $this->dispatch('wireui:confirm', [
+            'title' => 'Reset Stepper',
+            'description' => 'Are you sure you want to reset the stepper? All progress will be lost.',
+            'icon' => 'question',
+            'accept' => [
+                'label' => 'Yes, Reset',
+                'method' => 'confirmReset',
+            ],
+            'reject' => [
+                'label' => 'Cancel',
+            ]
+        ]);
+    }
+
+    public function confirmReset(): void
+    {
+        $this->resetStepper();
     }
 
     public function defineSteps(): array
@@ -51,6 +87,17 @@ abstract class CStepper extends Component implements StepperContract
     public function mount()
     {
         $this->triggerEvent('beforeMount', ...func_get_args());
+
+        // Initialize session key for this stepper instance
+        $this->sessionKey = 'cstepper_' . $this->getId();
+        
+        // Check if this is a fresh page load (not a Livewire request)
+        if ($this->shouldAutoReset()) {
+            $this->performAutoReset();
+        } else {
+            // Mark stepper as initialized for this session
+            session()->put($this->sessionKey . '_initialized', true);
+        }
 
         if (method_exists($this, 'model')) {
             $this->model = $this->model();
@@ -72,6 +119,40 @@ abstract class CStepper extends Component implements StepperContract
         });
 
         $this->triggerEvent('afterMount', ...func_get_args());
+    }
+
+    protected function shouldAutoReset(): bool
+    {
+        // Reset if this is a fresh page load (no session marker)
+        if (!session()->has($this->sessionKey . '_initialized')) {
+            return true;
+        }
+
+        // Also reset if user came from external source (no referrer from same domain)
+        $referrer = request()->header('referer');
+        if (!$referrer || !str_contains($referrer, request()->getHost())) {
+            return true;
+        }
+
+        // Check for explicit reset parameter in URL
+        if (request()->has('reset') && request()->get('reset') === 'true') {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function performAutoReset(): void
+    {
+        $this->currentIndex = 0;
+        $this->clearFormData();
+        $this->cachedStepComponents = [];
+        
+        // Clear any existing session data
+        session()->forget($this->sessionKey . '_data');
+        
+        // Mark as initialized
+        session()->put($this->sessionKey . '_initialized', true);
     }
 
     public function stepComponentInstances(null|Closure $callback = null): array
