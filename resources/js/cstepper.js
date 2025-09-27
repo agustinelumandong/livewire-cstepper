@@ -2,6 +2,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Livewire CStepper with WireUI initialized');
     
+    // Detect browser refresh and handle stepper state
+    detectBrowserRefresh();
+    
     // Enhanced animation support
     if (window.Alpine) {
         Alpine.directive('cstepper-animate', (el, { expression }, { effect, cleanup }) => {
@@ -30,6 +33,29 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             observer.observe(el, { attributes: true });
         });
+    }
+
+    // Browser refresh detection
+    function detectBrowserRefresh() {
+        // Check if page was refreshed
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+            console.log('Browser refresh detected - stepper should auto-reset');
+            
+            // Mark in session storage that this was a refresh
+            sessionStorage.setItem('cstepper_refresh_detected', 'true');
+            
+            // Find stepper components and trigger reset if needed
+            const steppers = document.querySelectorAll('[wire\\:id]');
+            steppers.forEach(stepper => {
+                if (stepper.getAttribute('wire:id')) {
+                    // The backend will handle the reset via session detection
+                    console.log('Stepper component found, backend should handle reset');
+                }
+            });
+        } else {
+            // Clear refresh marker on normal navigation
+            sessionStorage.removeItem('cstepper_refresh_detected');
+        }
     }
 });
 
@@ -66,6 +92,40 @@ window.addEventListener('livewire:initialized', () => {
                 }
             }
         });
+    });
+    
+    // Stepper reset event handling
+    Livewire.on('stepper-reset', (event) => {
+        console.log('Stepper reset detected');
+        
+        // Clear any cached form data
+        sessionStorage.removeItem('cstepper_temp_data');
+        
+        // Reset progress animations
+        const indicators = document.querySelectorAll('.step-indicator');
+        indicators.forEach((indicator) => {
+            const badge = indicator.querySelector('.badge, x-badge');
+            if (badge) {
+                badge.classList.remove('animate-pulse', 'animate-bounce');
+            }
+        });
+        
+        // Smooth scroll to top of stepper
+        const stepperContainer = document.querySelector('.livewire-cstepper-container');
+        if (stepperContainer) {
+            stepperContainer.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+            });
+        }
+        
+        // Show reset animation
+        const stepContent = document.querySelector('.step-content');
+        if (stepContent) {
+            stepContent.classList.add('animate-fadeIn');
+            setTimeout(() => stepContent.classList.remove('animate-fadeIn'), 500);
+        }
     });
     
     // Stepper completion with enhanced feedback

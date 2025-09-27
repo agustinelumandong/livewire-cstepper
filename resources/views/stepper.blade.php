@@ -55,6 +55,19 @@
                             Back
                         </x-button>
                     @endif
+                    
+                    <!-- Reset Button -->
+                    <x-button 
+                        wire:click="resetWithConfirmation" 
+                        outline
+                        negative
+                        icon="refresh"
+                        wire:loading.attr="disabled"
+                        title="Reset stepper to beginning"
+                        class="ml-2"
+                    >
+                        Reset
+                    </x-button>
                 </div>
 
                 <!-- Step Counter -->
