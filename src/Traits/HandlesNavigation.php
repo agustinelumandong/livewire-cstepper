@@ -34,6 +34,9 @@ trait HandlesNavigation
             if ($this->validateCurrentStep()) {
                 $this->jumpTo($targetIndex);
                 
+                // Mark stepper as active (user has interacted)
+                $this->markStepperActive();
+                
                 // Dispatch step changed event for JavaScript
                 $this->dispatch('step-changed', [
                     'step' => $this->currentIndex,
@@ -57,6 +60,9 @@ trait HandlesNavigation
     {
         $targetIndex = $toIndex ?? $this->getPreviousStepIndex();
         $this->jumpTo($targetIndex);
+        
+        // Mark stepper as active (user has interacted)
+        $this->markStepperActive();
     }
 
     public function jumpTo($index): void
@@ -246,5 +252,12 @@ trait HandlesNavigation
     {
         $steps = $this->stepComponentInstances();
         return $steps[$index] ?? null;
+    }
+
+    protected function markStepperActive(): void
+    {
+        if (property_exists($this, 'sessionKey') && !empty($this->sessionKey)) {
+            session()->put($this->sessionKey . '_active', true);
+        }
     }
 }
